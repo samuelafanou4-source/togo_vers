@@ -1,0 +1,25 @@
+[
+    {
+        "id": 1,
+        "nom": "Monument de l'indépendance",
+        "histoire": "Inauguré le 27 avril 1960, ce monument symbolise l'accession du togo à la souveraineté internationale. Il représente une silhouette humaine s'affranchissant de ses chaines",
+        "latitude": "6.1311",
+        "longitude": "1.2227"
+
+    },
+
+    {
+
+        "id": 2,
+        "nom": "Place de la colombe de la Paix",
+        "histoire": "Érigée au coeur de Lomé, cette place arbore une immense colombe blanche prête à s'envoler, symbolisant l'attachement du peuple togolais à la paix et à la stabilité",
+        "latitude": "6.1452",
+        "longitude": "1.2154"
+        
+    }
+
+
+
+] 
+
+
