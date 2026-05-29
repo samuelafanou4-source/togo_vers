@@ -81,7 +81,7 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
         
 
         data_touristique = json.loads(texte_brut)
-        data_tour = data_touristique.get("monument", "")
+        data_tour = data_touristique.get("monument", "").lower()
 
         donnees_finales = None
 
@@ -99,16 +99,16 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
 
             if not donnees_finales:
                 donnees_finales = {
-                "monument": data_touristique("monument"),
-                "histoire": "Monument identifié au Togo. Description officielle en cours de rédaction",
-                "latitude": 6.1311,
-                "longitude": 1.2227,
+                "monument": data_touristique.get("monument", "Monulent inconnu"),
+                "histoire": data_touristique.get("Monument identifié au Togo. Description officielle en cours de rédaction"),
+                "latitude": data_touristique.get("latitude", 6.1311),
+                "longitude": data_touristique.get("longitude", 1.2227),
                 "source": "ai_fallback"
                 }
 
         return{
                 "prediction_status": "success",
-                "data": data_touristique
+                "data": donnees_finales
         }
     
     except json.JSONDecodeError:
