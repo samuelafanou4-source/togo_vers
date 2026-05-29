@@ -55,19 +55,24 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
     try:
         image_bytes = await file.read()
         image = Image.open(io.BytesIO(image_bytes))
-        prompt = """
-        Analyse cette photo prise par un touriste au  Togo (il peut s'agir d'un monument comme l'Indépendance, la Colombe de la Paix, le Palais de Lomé, un Tata Tamberma, ou un objet d'art artisanal).
-        Agis en tant que guide touristique expert du Togo, spécialisé dans la culture et l'histoire locale.
-        Tu dois obligatoirement générer une réponse STRICTEMENT au format JSON en respectant scrupuleusement la structure suivante :
-        {
-        "monument": "Nom officiel du monument ou de l'objet",
-        "histoire": "Un récit historique captivant, fluide et instructif en français (environ 3 à 5 lignes)",
-        "latitude": 6.1311,
-        "longitude": 1.2227
-        }
 
-        Important : Ne renvoie aucun texte d'introduction ni de conclusion, pas de balises Markdown. Uniquement le bloc JSON brut. Donne des coordonnées GPS réelles et précises du lieu si tu le reconnais.
+        contexte_json = json.dumps(BASE_MONUMENT, ensure_ascii=False)
+
+        prompt = f"""
+        Tu es un guide touristique expert du Togo. Voici la base de données officielle des monuments de notre application :
+        {contexte_json}
+        Analyse la photo du touriste. 
+        1. Si tu reconnais un des monuments de la base de données ci-dessus, réutilise EXACTEMENT son "nom", son "histoire", sa "latitude" et sa "longitude".
+        2. Si le monument n'est pas dans la liste, invente le bloc JSON avec des données réelles sur le Togo.
+        Réponds STRICTEMENT au format JSON suivant, sans markdown :
+        {{
+          "monument": "Nom",
+          "histoire": "Histoire",
+          "latitude": 0.0,
+          "longitude": 0.0
+        }}
         """
+
         response = Client.models.generate_content(
             model='gemini-2.5-flash',
             contents = [image, prompt]
