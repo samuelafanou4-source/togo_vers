@@ -20,7 +20,7 @@ Client = genai.Client(api_key=settings.gemini_api_key)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://192.168.1.110:3000/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -78,8 +78,33 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
             texte_brut = texte_brut.replace("```json", "").replace("```", "").strip()
         elif texte_brut.startswith("```"):
             texte_brut = texte_brut.replace("```", "").strip()
-            
+        
+
         data_touristique = json.loads(texte_brut)
+        data_tour = data_touristique.get("monument", "")
+
+        donnees_finales = None
+
+        for m in BASE_MONUMENT:
+
+            if data_tour in m["nom"].lower() or m["nom"].lower() in data_tour:
+                donnees_finales = {
+                    "monument": m["nom"],
+                    "histoire": m["histoire"],
+                    "latitude": m["latitude"],
+                    "longitude": m["longitude"],
+                    "source": "local_database"
+                }
+                break
+
+            if not donnees_finales:
+                donnees_finales = {
+                "monument": data_touristique("monument"),
+                "histoire": "Monument identifié au Togo. Description officielle en cours de rédaction",
+                "latitude": 6.1311,
+                "longitude": 1.2227,
+                "source": "ai_fallback"
+                }
 
         return{
                 "prediction_status": "success",
