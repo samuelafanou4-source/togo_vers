@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, Query, UploadFile, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 import json
@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from google import genai
+from haversine import calcul_de_l_haversine
+
 
 
 class Settings(BaseSettings):
@@ -29,6 +31,9 @@ app.add_middleware(
 with open("togo_vers.json", "r", encoding="utf-8") as fichier:
     BASE_MONUMENT = json.load(fichier)
 
+with open("hotel.json", "r", encoding="utf-8") as fichier:
+    BASE_HOTEL = json.load(fichier)
+
 
 class Monument(BaseModel):
     id: int
@@ -37,6 +42,11 @@ class Monument(BaseModel):
     latitude: float
     longitude: float
 
+class hotel(BaseModel):
+    nom: str
+    latitude: float
+    longitude: float
+    prix_nuit: int
 
 @app.get("/")
 def read_root():
@@ -45,6 +55,24 @@ def read_root():
 @app.get("/monument", response_model=List[Monument])
 def get_Monument():
     return BASE_MONUMENT
+
+@app.get("/hotel")
+def get_hotel_proche(lat: float = Query(..., description="Latitude du monument"), long: float = Query(..., description="Longitude du monument")):
+
+    hotel_avec_distance = []
+
+    for h in BASE_HOTEL:
+
+        distances = calcul_de_l_haversine(lat, long, h["latitude"], h["longitude"])
+        hotel_data = h.copy()
+        hotel_data["distance_km"] = distances
+        hotel_avec_distance.append(hotel_data)
+    hotel_tries = sorted(hotel_avec_distance, key=lambda x: x["distance_km"])
+
+    return hotel_tries
+
+
+
 
 
 @app.post("/predict")

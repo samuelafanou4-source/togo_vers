@@ -1,0 +1,47 @@
+[
+    
+    {
+        
+        "nom": "Hôtel 2 Février (Lomé)", 
+        "latitude": 6.1317,    
+        "longitude": 1.2169, 
+        "prix_nuit": "120 000 FCFA"
+
+    },
+
+    {
+
+        "nom": "Sarakawa Hôtel", 
+        "latitude": 6.1265, 
+        "longitude": 1.2598, 
+        "prix_nuit": "75 000 FCFA"
+
+    },
+
+    {
+
+        "nom": "Onomo Hôtel Lomé", 
+        "latitude": 6.1192, 
+        "longitude": 1.2475, 
+        "prix_nuit": "55 000 FCFA"
+
+    },
+
+    {
+
+         "nom": "Hôtel de la Paix", 
+         "latitude": 6.1241, 
+         "longitude": 1.2361, 
+         "prix_nuit": "45 000 FCFA"
+
+    },
+    
+    {
+
+         "nom": "Logis de l'Aéroport (Proche de l'Aéroport)", "latitude": 6.1620, 
+         "longitude": 1.2510, 
+         "prix_nuit": "25 000 FCFA"
+
+    }
+
+]
