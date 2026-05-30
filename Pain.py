@@ -22,7 +22,7 @@ Client = genai.Client(api_key=settings.gemini_api_key)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://192.168.1.110:3000/"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,8 +31,8 @@ app.add_middleware(
 with open("togo_vers.json", "r", encoding="utf-8") as fichier:
     BASE_MONUMENT = json.load(fichier)
 
-with open("hotel.json", "r", encoding="utf-8") as fichier:
-    BASE_HOTEL = json.load(fichier)
+with open("hotel.json", "r", encoding="utf-8") as fichier_hotel:
+    BASE_HOTEL = json.load(fichier_hotel)
 
 
 class Monument(BaseModel):
@@ -133,7 +133,7 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
             if not donnees_finales:
                 donnees_finales = {
                 "monument": data_touristique.get("monument", "Monulent inconnu"),
-                "histoire": data_touristique.get("Monument identifié au Togo. Description officielle en cours de rédaction"),
+                "histoire": data_touristique.get("histoire", "Monument identifié au Togo. Description officielle en cours de rédaction"),
                 "latitude": data_touristique.get("latitude", 6.1311),
                 "longitude": data_touristique.get("longitude", 1.2227),
                 "source": "ai_fallback"
