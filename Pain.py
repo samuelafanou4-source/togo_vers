@@ -8,11 +8,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from google import genai
 from haversine import calcul_de_l_haversine
+from fastapi import Security, Depends
+from fastapi.security import api_key
 
 
 
 class Settings(BaseSettings):
     gemini_api_key: str
+    api_secret_key:str
     model_config = SettingsConfigDict(env_file=".env")
 settings = Settings() 
 
@@ -27,6 +30,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+cle_api = "herit"
+api_key_header = api_key.APIKeyHeader(name=cle_api)
 
 with open("togo_vers.json", "r", encoding="utf-8") as fichier:
     BASE_MONUMENT = json.load(fichier)
@@ -87,7 +93,6 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
         max_size = 1024
         image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
 
-        contexte_json = json.dumps(BASE_MONUMENT, ensure_ascii=False)
 
         prompt = """
         Agis en tant que guide expert du Togo. Analyse cette photo touristique.
