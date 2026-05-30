@@ -32,7 +32,15 @@ app.add_middleware(
 )
 
 cle_api = "herit"
-api_key_header = api_key.APIKeyHeader(name=cle_api)
+api_key_header = api_key.APIKeyHeader(name=cle_api, auto_error=False)
+
+def verifier_cle_api(api_key_recue: str = Depends(api_key_header)):
+    if api_key_recue == settings.api_secret_key:
+        return api_key_recue
+    raise HTTPException(
+        status_code=403,
+        detail="Accès interdit: Clé API invalide ou manquante"
+    )
 
 with open("togo_vers.json", "r", encoding="utf-8") as fichier:
     BASE_MONUMENT = json.load(fichier)
@@ -81,7 +89,7 @@ def get_hotel_proche(lat: float = Query(..., description="Latitude du monument")
 
 
 
-@app.post("/predict")
+@app.post("/predict", dependencies=[Depends(verifier_cle_api)])
 async def predict_monument(file: UploadFile = File(..., description="photo prise par le touriste")):
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="le fichier doit etre une image")
