@@ -96,6 +96,11 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
     
     try:
         image_bytes = await file.read()
+
+        max_file_size = 10 * 1024 * 1024
+        if len(image_bytes) > max_file_size:
+            raise HTTPException(status_code=413, detail="L'image est trop lourd, la taille maximale est 10 Mo")
+
         image = Image.open(io.BytesIO(image_bytes))
 
         max_size = 1024
