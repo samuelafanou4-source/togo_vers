@@ -89,19 +89,17 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
 
         contexte_json = json.dumps(BASE_MONUMENT, ensure_ascii=False)
 
-        prompt = f"""
-        Tu es un guide touristique expert du Togo. Voici la base de données officielle des monuments de notre application :
-        {contexte_json}
-        Analyse la photo du touriste. 
-        1. Si tu reconnais un des monuments de la base de données ci-dessus, réutilise EXACTEMENT son "nom", son "histoire", sa "latitude" et sa "longitude".
-        2. Si le monument n'est pas dans la liste, invente le bloc JSON avec des données réelles sur le Togo.
-        Réponds STRICTEMENT au format JSON suivant, sans markdown :
-        {{
-          "monument": "Nom",
-          "histoire": "Histoire",
-          "latitude": 0.0,
-          "longitude": 0.0
-        }}
+        prompt = """
+        Agis en tant que guide expert du Togo. Analyse cette photo touristique.
+        Identifie le monument ou le lieu (ex: Monument de l'Indépendance, Colombe de la Paix, Palais de Lomé, Tata Tamberma, Grand Marché).
+        
+        Tu dois renvoyer TOUJOURS une histoire courte (3 lignes maximum) au cas où le lieu n'est pas dans notre base.
+        
+        Réponds STRICTEMENT au format JSON suivant, sans balises Markdown :
+        {
+          "monument": "Nom officiel du lieu",
+          "histoire": "Histoire ou description culturelle rapide en français."
+        }
         """
 
         response = Client.models.generate_content(
