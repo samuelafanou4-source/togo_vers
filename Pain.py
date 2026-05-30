@@ -84,6 +84,9 @@ async def predict_monument(file: UploadFile = File(..., description="photo prise
         image_bytes = await file.read()
         image = Image.open(io.BytesIO(image_bytes))
 
+        max_size = 1024
+        image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+
         contexte_json = json.dumps(BASE_MONUMENT, ensure_ascii=False)
 
         prompt = f"""
